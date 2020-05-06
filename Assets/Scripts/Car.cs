@@ -5,13 +5,16 @@ using UnityEngine;
 public class Car : MonoBehaviour
 {
     public float Speed;
-    public List<Vector3> Route = new List<Vector3>();
+    public List<GameObject> Route = new List<GameObject>();
     private Vector3 NextPoint;
 
-    public void SetRoute(List<Vector3> route)
+    private int index = 0;
+    private float xDelta = 0, zDelta = 0;
+
+    public void SetRoute(List<GameObject> route)
     {
         Route.AddRange(route);
-        NextPoint = Route[1];
+        NextPoint = transform.position;
     }
 
     private void LateUpdate()
@@ -21,13 +24,18 @@ public class Car : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, NextPoint, Time.deltaTime * Speed);
             transform.LookAt(NextPoint);
         }
-        else if (Route.IndexOf(NextPoint) != Route.Count - 1)
+        else if (index != Route.Count - 1)
         {
-            NextPoint = Route[Route.IndexOf(NextPoint) + 1];
+            xDelta = Route[index].GetComponent<Tile>().RightTarget.position.x - transform.position.x;
+            zDelta = Route[index].GetComponent<Tile>().RightTarget.position.z - transform.position.z;
+            index++;
+            if (xDelta > 0 || zDelta > 0)
+                NextPoint = Route[index].GetComponent<Tile>().LeftTarget.position;
+            else
+                NextPoint = Route[index].GetComponent<Tile>().RightTarget.position;
         }
         else
         {
-            Debug.Log("Done");
             FindObjectOfType<RouteManager>().OnDeliveryDone();
             Destroy(gameObject);
         }

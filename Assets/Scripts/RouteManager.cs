@@ -11,7 +11,7 @@ public class RouteManager : MonoBehaviour
     public GameObject CarPrefab;
 
     [SerializeField]
-    private List<Vector3> Route = new List<Vector3>();
+    private List<GameObject> Route = new List<GameObject>();
     [SerializeField]
     private List<GameObject> Markers = new List<GameObject>();
 
@@ -26,12 +26,12 @@ public class RouteManager : MonoBehaviour
         RouteCreationMode = true;
     }
 
-    public void EditRoutePoint(Vector3 point)
+    public void EditRoutePoint(GameObject point)
     {
         if (Route.Count < 1)
         {
             Route.Add(point);
-            Markers.Add(Instantiate(RouteMarkerPrefab, point + Vector3.up * MarkersHeight, Quaternion.identity, transform));
+            Markers.Add(Instantiate(RouteMarkerPrefab, point.transform.position + Vector3.up * MarkersHeight, Quaternion.identity, transform));
         }
         else
         {
@@ -42,11 +42,11 @@ public class RouteManager : MonoBehaviour
             }
             else if (!Route.Contains(point))
             {
-                if (point.x != Route[Route.Count - 1].x && point.z != Route[Route.Count - 1].z)
+                if (point.transform.position.x != Route[Route.Count - 1].transform.position.x && point.transform.position.z != Route[Route.Count - 1].transform.position.z)
                     return;
 
                 Route.Add(point);
-                Markers.Add(Instantiate(RouteMarkerPrefab, point + Vector3.up * MarkersHeight, Quaternion.identity, transform));
+                Markers.Add(Instantiate(RouteMarkerPrefab, point.transform.position + Vector3.up * MarkersHeight, Quaternion.identity, transform));
             }
         }
     }
@@ -69,11 +69,12 @@ public class RouteManager : MonoBehaviour
             return;
 
         RouteCreationMode = false;
-        Car car = Instantiate(CarPrefab, Route[0] + Vector3.up * CarYOffset, Quaternion.identity, transform).GetComponent<Car>();
-        for (int i = 0; i < Route.Count; i++)
-        {
-            Route[i] += Vector3.up * CarYOffset;
-        }
+        Transform spawnPosition;
+        if (Route[1].transform.position.x - Route[0].transform.position.x > 0 || Route[1].transform.position.z - Route[0].transform.position.z > 0)
+            spawnPosition = Route[0].GetComponent<Tile>().RightTarget;
+        else
+            spawnPosition = Route[0].GetComponent<Tile>().LeftTarget;
+        Car car = Instantiate(CarPrefab, spawnPosition.position, Quaternion.identity, transform).GetComponent<Car>();
         car.SetRoute(Route);
     }
 

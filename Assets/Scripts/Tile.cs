@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    public Transform RightTarget, LeftTarget;
+
     private void OnMouseDown()
     {
         if (RouteManager.RouteCreationMode)
         {
-            FindObjectOfType<RouteManager>().EditRoutePoint(transform.position);
+            FindObjectOfType<RouteManager>().EditRoutePoint(gameObject);
         }
     }
 }

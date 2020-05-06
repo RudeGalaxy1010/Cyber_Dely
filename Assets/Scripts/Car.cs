@@ -18,7 +18,7 @@ public class Car : MonoBehaviour
     {
         if (NextPoint != transform.position)
         {
-            transform.position = Vector3.MoveTowards(transform.position, NextPoint, Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, NextPoint, Time.deltaTime * Speed);
             transform.LookAt(NextPoint);
         }
         else if (Route.IndexOf(NextPoint) != Route.Count - 1)

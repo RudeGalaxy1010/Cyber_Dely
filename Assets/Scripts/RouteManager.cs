@@ -15,11 +15,6 @@ public class RouteManager : MonoBehaviour
     [SerializeField]
     private List<GameObject> Markers = new List<GameObject>();
 
-    private void Start()
-    {
-        CreateRoute();
-    }
-
     public void CreateRoute()
     {
         ClearAll();
@@ -56,10 +51,6 @@ public class RouteManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && RouteCreationMode)
         {
             OnRouteEnd();
-        }
-        if (Input.GetKeyDown(KeyCode.R) && !RouteCreationMode)
-        {
-            CreateRoute();
         }
     }
 

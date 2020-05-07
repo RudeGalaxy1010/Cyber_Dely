@@ -13,6 +13,7 @@ public class CameraControl : MonoBehaviour
     public float movementSpeed;
     public float rotationAmount;
     public float zoomAmount;
+    public float MaxZoomValue = 7f;
     [Space(10)]
     public Vector2 CameraRestrictions;
 
@@ -73,7 +74,7 @@ public class CameraControl : MonoBehaviour
         }
 
 
-        newZoom = new Vector3(0, 0, Mathf.Clamp(newZoom.z, 0, 10));
+        newZoom = new Vector3(0, -Mathf.Clamp(newZoom.z, 0, MaxZoomValue), Mathf.Clamp(newZoom.z, 0, MaxZoomValue));
         newPosition = new Vector3(Mathf.Clamp(newPosition.x, -CameraRestrictions.x, CameraRestrictions.x), newPosition.y, Mathf.Clamp(newPosition.z, -CameraRestrictions.y, CameraRestrictions.y));
 
 

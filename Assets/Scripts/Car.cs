@@ -24,15 +24,34 @@ public class Car : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, NextPoint, Time.deltaTime * Speed);
             transform.LookAt(NextPoint);
         }
-        else if (index != Route.Count - 1)
+        else if (index < Route.Count - 1)
         {
-            xDelta = Route[index].GetComponent<Tile>().RightTarget.position.x - transform.position.x;
-            zDelta = Route[index].GetComponent<Tile>().RightTarget.position.z - transform.position.z;
             index++;
-            if (xDelta > 0 || zDelta > 0)
-                NextPoint = Route[index].GetComponent<Tile>().LeftTarget.position;
+            if (index < Route.Count - 1)
+            {
+                xDelta = Route[index + 1].transform.position.x - transform.position.x;
+                zDelta = Route[index + 1].transform.position.z - transform.position.z;
+
+                if (xDelta > 0 && zDelta >= 0)
+                    NextPoint = Route[index].GetComponent<Tile>().BRightTarget.position;
+                else if (xDelta > 0 && zDelta < 0)
+                    NextPoint = Route[index].GetComponent<Tile>().BLeftTarget.position;
+                else if (xDelta < 0 && zDelta >= 0)
+                    NextPoint = Route[index].GetComponent<Tile>().ARightTarget.position;
+                else
+                    NextPoint = Route[index].GetComponent<Tile>().ALeftTarget.position;
+            }
             else
-                NextPoint = Route[index].GetComponent<Tile>().RightTarget.position;
+            {
+                xDelta = Route[index].GetComponent<Tile>().BRightTarget.transform.position.x - Route[index - 1].GetComponent<Tile>().BRightTarget.position.x;
+                zDelta = Route[index].GetComponent<Tile>().BRightTarget.transform.position.z - Route[index - 1].GetComponent<Tile>().BRightTarget.position.z;
+
+                if (xDelta > 0 || zDelta > 0)
+                    NextPoint = Route[index].GetComponent<Tile>().BRightTarget.position;
+                else
+                    NextPoint = Route[index].GetComponent<Tile>().ALeftTarget.position;
+            }
+
         }
         else
         {

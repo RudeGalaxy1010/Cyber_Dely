@@ -71,9 +71,9 @@ public class RouteManager : MonoBehaviour
         RouteCreationMode = false;
         Transform spawnPosition;
         if (Route[1].transform.position.x - Route[0].transform.position.x > 0 || Route[1].transform.position.z - Route[0].transform.position.z > 0)
-            spawnPosition = Route[0].GetComponent<Tile>().RightTarget;
+            spawnPosition = Route[0].GetComponent<Tile>().BRightTarget;
         else
-            spawnPosition = Route[0].GetComponent<Tile>().LeftTarget;
+            spawnPosition = Route[0].GetComponent<Tile>().ALeftTarget;
         Car car = Instantiate(CarPrefab, spawnPosition.position, Quaternion.identity, transform).GetComponent<Car>();
         car.SetRoute(Route);
     }

@@ -587,6 +587,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RouteMarkerPrefab: {fileID: 6942382886731111841, guid: 2d9eac03171bd944e8dd38759d0f30d3,
     type: 3}
+  FirstRouteMarkerPrefab: {fileID: 3675259657557145109, guid: 1834726d975f75f4c868be8892698ca4,
+    type: 3}
+  LastRouteMarkerPrefab: {fileID: 5399222144777982296, guid: 6043fab0aee488446b9cb457b539b477,
+    type: 3}
   MarkersHeight: 5
   CarYOffset: 0.615
   CarPrefab: {fileID: 6787165992187337576, guid: 2e3189f1801e2244785772de007b317b,

@@ -4,7 +4,7 @@ using UnityEngine;
 public class RouteManager : MonoBehaviour
 {
     public static bool RouteCreationMode = false;
-    public GameObject RouteMarkerPrefab;
+    public GameObject RouteMarkerPrefab, FirstRouteMarkerPrefab, LastRouteMarkerPrefab;
     public float MarkersHeight = 5f;
     [Space(10)]
     public float CarYOffset;
@@ -26,14 +26,19 @@ public class RouteManager : MonoBehaviour
         if (Route.Count < 1)
         {
             Route.Add(point);
-            Markers.Add(Instantiate(RouteMarkerPrefab, point.transform.position + Vector3.up * MarkersHeight, Quaternion.identity, transform));
+            Markers.Add(Instantiate(FirstRouteMarkerPrefab, point.transform.position + Vector3.up * MarkersHeight, Quaternion.identity, transform));
         }
         else
         {
-            if (Route.Count != 1 && Route[Route.Count - 1] == point)
+            if (Route.Count > 1 && Route[Route.Count - 1] == point)
             {
                 Route.Remove(point);
                 DelMarker(Markers.Count - 1);
+                if (Markers.Count > 1)
+                {
+                    Markers.Add(Instantiate(LastRouteMarkerPrefab, Markers[Markers.Count - 1].transform.position, Quaternion.identity, transform));
+                    DelMarker(Markers.Count - 2);
+                }
             }
             else if (!Route.Contains(point))
             {
@@ -41,7 +46,12 @@ public class RouteManager : MonoBehaviour
                     return;
 
                 Route.Add(point);
-                Markers.Add(Instantiate(RouteMarkerPrefab, point.transform.position + Vector3.up * MarkersHeight, Quaternion.identity, transform));
+                if (Markers.Count > 1)
+                {
+                    Markers.Add(Instantiate(RouteMarkerPrefab, Markers[Markers.Count - 1].transform.position, Quaternion.identity, transform));
+                    DelMarker(Markers.Count - 2);
+                }
+                Markers.Add(Instantiate(LastRouteMarkerPrefab, point.transform.position + Vector3.up * MarkersHeight, Quaternion.identity, transform));
             }
         }
     }
@@ -56,7 +66,7 @@ public class RouteManager : MonoBehaviour
 
     public void OnRouteEnd()
     {
-        if (!RouteCreationMode)
+        if (!RouteCreationMode || Route.Count < 2)
             return;
 
         RouteCreationMode = false;

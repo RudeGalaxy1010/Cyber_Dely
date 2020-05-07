@@ -5,9 +5,8 @@ public class RouteManager : MonoBehaviour
 {
     public static bool RouteCreationMode = false;
     public GameObject RouteMarkerPrefab, FirstRouteMarkerPrefab, LastRouteMarkerPrefab;
-    public float MarkersHeight = 5f;
+    public float MarkersHeight = 10f;
     [Space(10)]
-    public float CarYOffset;
     public GameObject CarPrefab;
 
     [SerializeField]
@@ -82,6 +81,7 @@ public class RouteManager : MonoBehaviour
     public void OnDeliveryDone()
     {
         ClearAll();
+        FindObjectOfType<DeliveryManager>().GenerateDelivery();
     }
 
     private void DelMarker(int index)

@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class DeliveryManager : MonoBehaviour
 {
-    public Delivery delivery;
+    public List<GameObject> Cities = new List<GameObject>();
 
-    private RouteManager RM;
+    public Delivery delivery;
+    private RouteManager RM;    
 
     private void Start()
     {
         RM = FindObjectOfType<RouteManager>();
-        OnDeliveryAccept();
+        GenerateDelivery();
     }
 
-    public void GetDelivery()
+    public void GenerateDelivery()
     {
-        delivery = new Delivery { };
+        delivery = new Delivery {  };
+        Cities[Random.Range(0, Cities.Count)].GetComponent<City>().SpawnDelivery();
     }
 
     public void OnDeliveryAccept()

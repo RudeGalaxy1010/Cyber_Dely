@@ -4,15 +4,15 @@ using UnityEngine;
 public class RouteManager : MonoBehaviour
 {
     public static bool RouteCreationMode = false;
-    public GameObject RouteMarkerPrefab, FirstRouteMarkerPrefab, LastRouteMarkerPrefab;
+    public GameObject RouteMarkerPrefab, FirstRouteMarkerPrefab, LastRouteMarkerPrefab, MapViewRouteStartMarkerPrefab, MapViewRouteEndMarkerPrefab;
     public float MarkersHeight = 10f;
     [Space(10)]
     public GameObject CarPrefab;
 
-    [SerializeField]
     private List<GameObject> Route = new List<GameObject>();
-    [SerializeField]
     private List<GameObject> Markers = new List<GameObject>();
+    private GameObject StartMarker, EndMarker;
+    private GameObject Destination;
 
     public void CreateRoute(GameObject StartPoint)
     {
@@ -34,7 +34,7 @@ public class RouteManager : MonoBehaviour
             {
                 Route.Remove(point);
                 DelMarker(Markers.Count - 1);
-                if (Markers.Count > 1)
+                if (Markers.Count > 1 && point.transform.position + Vector3.up * MarkersHeight != Markers[1].transform.position)
                 {
                     Markers.Add(Instantiate(LastRouteMarkerPrefab, Markers[Markers.Count - 1].transform.position, Quaternion.identity, transform));
                     DelMarker(Markers.Count - 2);
@@ -56,18 +56,13 @@ public class RouteManager : MonoBehaviour
         }
     }
 
-    private void Update()
+    public bool OnRouteEnd()
     {
-        if (Input.GetKeyDown(KeyCode.R) && RouteCreationMode)
-        {
-            OnRouteEnd();
-        }
-    }
+        if (!RouteCreationMode || Route.Count < 2 || Route[Route.Count -1] != Destination)
+            return false;
 
-    public void OnRouteEnd()
-    {
-        if (!RouteCreationMode || Route.Count < 2)
-            return;
+        Destroy(StartMarker);
+        Destroy(EndMarker);
 
         RouteCreationMode = false;
         Transform spawnPosition;
@@ -77,12 +72,15 @@ public class RouteManager : MonoBehaviour
             spawnPosition = Route[0].GetComponent<Tile>().ALeftTarget;
         Car car = Instantiate(CarPrefab, spawnPosition.position, Quaternion.identity, transform).GetComponent<Car>();
         car.SetRoute(Route);
+
+        return true;
     }
 
     public void ShowRoute(GameObject A, GameObject B)
     {
-        Markers.Add(Instantiate(FirstRouteMarkerPrefab, A.transform.position + Vector3.up * MarkersHeight, Quaternion.identity, transform));
-        Markers.Add(Instantiate(LastRouteMarkerPrefab, B.transform.position + Vector3.up * MarkersHeight, Quaternion.identity, transform));
+        StartMarker = Instantiate(MapViewRouteStartMarkerPrefab, A.transform.position + Vector3.up * MarkersHeight * 1.5f, Quaternion.identity, transform);
+        EndMarker = Instantiate(MapViewRouteEndMarkerPrefab, B.transform.position + Vector3.up * MarkersHeight * 1.5f, Quaternion.identity, transform);
+        Destination = B;
     }
 
     public void OnDeliveryDone()

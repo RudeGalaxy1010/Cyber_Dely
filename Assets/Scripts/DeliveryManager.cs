@@ -7,7 +7,7 @@ public class DeliveryManager : MonoBehaviour
     public List<GameObject> Cities = new List<GameObject>();
 
     public Delivery delivery;
-    public GameObject deliveryPanel, mapViewPanel;
+    public GameObject deliveryPanel, mapViewPanel, routeAcceptionPanel;
 
     private GameObject CurrentCity;
     private RouteManager RM;
@@ -21,6 +21,7 @@ public class DeliveryManager : MonoBehaviour
 
         deliveryPanel.SetActive(false);
         mapViewPanel.SetActive(false);
+        routeAcceptionPanel.SetActive(false);
     }
 
     public void GenerateDelivery()
@@ -48,12 +49,21 @@ public class DeliveryManager : MonoBehaviour
     public void OnDeliveryAccept()
     {
         RM.CreateRoute(CurrentCity);
+        routeAcceptionPanel.SetActive(true);
     }
 
     public void OnDeliveryDeny()
     {
         RM.ClearAll();
         GenerateDelivery();
+    }
+
+    public void OnRouteCheck()
+    {
+        if (RM.OnRouteEnd())
+        {
+            routeAcceptionPanel.SetActive(false);
+        }
     }
 
     private GameObject GetRandomCity()

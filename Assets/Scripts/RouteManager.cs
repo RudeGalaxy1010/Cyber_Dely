@@ -14,10 +14,11 @@ public class RouteManager : MonoBehaviour
     [SerializeField]
     private List<GameObject> Markers = new List<GameObject>();
 
-    public void CreateRoute()
+    public void CreateRoute(GameObject StartPoint)
     {
         ClearAll();
         RouteCreationMode = true;
+        EditRoutePoint(StartPoint);
     }
 
     public void EditRoutePoint(GameObject point)
@@ -78,6 +79,12 @@ public class RouteManager : MonoBehaviour
         car.SetRoute(Route);
     }
 
+    public void ShowRoute(GameObject A, GameObject B)
+    {
+        Markers.Add(Instantiate(FirstRouteMarkerPrefab, A.transform.position + Vector3.up * MarkersHeight, Quaternion.identity, transform));
+        Markers.Add(Instantiate(LastRouteMarkerPrefab, B.transform.position + Vector3.up * MarkersHeight, Quaternion.identity, transform));
+    }
+
     public void OnDeliveryDone()
     {
         ClearAll();
@@ -90,7 +97,7 @@ public class RouteManager : MonoBehaviour
         Markers.RemoveAt(index);
     }
 
-    private void ClearAll()
+    public void ClearAll()
     {
         Route.Clear();
         if (Markers.Count > 0)

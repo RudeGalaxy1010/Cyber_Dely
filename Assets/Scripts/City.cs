@@ -23,6 +23,6 @@ public class City : MonoBehaviour
     public void ViewDelivery()
     {
         Panel.SetActive(false);
-        DM.OnDeliveryAccept();
+        DM.OnViewDelivery();
     }
 }

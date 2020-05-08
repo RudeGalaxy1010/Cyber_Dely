@@ -7,28 +7,63 @@ public class DeliveryManager : MonoBehaviour
     public List<GameObject> Cities = new List<GameObject>();
 
     public Delivery delivery;
-    private RouteManager RM;    
+    public GameObject deliveryPanel, mapViewPanel;
+
+    private GameObject CurrentCity;
+    private RouteManager RM;
+
+    private GameObject lastCity, city;
 
     private void Start()
     {
         RM = FindObjectOfType<RouteManager>();
         GenerateDelivery();
+
+        deliveryPanel.SetActive(false);
+        mapViewPanel.SetActive(false);
     }
 
     public void GenerateDelivery()
     {
-        delivery = new Delivery {  };
-        Cities[Random.Range(0, Cities.Count)].GetComponent<City>().SpawnDelivery();
+        if (Cities.Count < 2)
+            return;
+
+        CurrentCity = GetRandomCity();
+        delivery = new Delivery { Name = "Test", Weight = 0.1f, StartPoint = CurrentCity, DestinationPoint = GetRandomCity() };
+        CurrentCity.GetComponent<City>().SpawnDelivery();
+    }
+
+    public void OnViewDelivery()
+    {
+        deliveryPanel.GetComponent<DeliveryPanel>().SetValues(delivery);
+        deliveryPanel.SetActive(true);
+    }
+
+    public void OnDeliveryMapView()
+    {
+        mapViewPanel.SetActive(true);
+        RM.ShowRoute(delivery.StartPoint, delivery.DestinationPoint);
     }
 
     public void OnDeliveryAccept()
     {
-        RM.CreateRoute();
+        RM.CreateRoute(CurrentCity);
     }
 
     public void OnDeliveryDeny()
     {
-        Debug.Log("Denied");
+        RM.ClearAll();
+        GenerateDelivery();
+    }
+
+    private GameObject GetRandomCity()
+    {
+        while (city == lastCity)
+        {
+            city = Cities[Random.Range(0, Cities.Count)];
+        }
+        lastCity = city;
+        return city;
     }
 }
 
@@ -37,4 +72,5 @@ public class Delivery
 {
     public string Name;
     public float Weight;
+    public GameObject StartPoint, DestinationPoint;
 }
